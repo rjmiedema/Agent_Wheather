@@ -129,10 +129,7 @@ function displayCurrentWeather(data, cityName, country) {
 
     document.getElementById('cityName').textContent = `${cityName}, ${country}`;
     document.getElementById('weatherDate').textContent = dateStr;
-    document.getElementById('currentIcon').src = '';
     document.getElementById('currentIcon').textContent = weather.icon;
-    document.getElementById('currentIcon').style.fontSize = '64px';
-    document.getElementById('currentIcon').style.fontStyle = 'normal';
     document.getElementById('currentTemp').textContent = Math.round(current.temperature_2m);
     document.getElementById('currentCondition').textContent = weather.desc;
     document.getElementById('currentMinMax').textContent = 
