@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Forecast</title>
+    <meta name="theme-color" content="#5b6be6">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>Weather Forecast</h1>
+            <p class="subtitle">Accurate 7-day forecasts, fast.</p>
             <div class="search-box">
                 <input 
                     type="text" 
@@ -49,8 +52,9 @@
             <div id="forecastGrid" class="forecast-grid"></div>
         </div>
 
-        <div id="loadingSpinner" class="loading hidden">
-            <p>Loading weather data...</p>
+        <div id="loadingSpinner" class="loading hidden" aria-live="polite">
+            <div class="spinner" role="status" aria-hidden="true"></div>
+            <p class="loading-text">Loading weather data...</p>
         </div>
     </div>
 

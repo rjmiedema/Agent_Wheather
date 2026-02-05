@@ -2,13 +2,23 @@
 
 A simple, responsive weather forecast application that displays current weather and a 7-day forecast for any city worldwide.
 
+# Weather Forecast Website
+
+A simple, responsive weather forecast application that displays current weather and a 7-day forecast for any city worldwide.
+
 ## Features
 
 - 🌍 **Search any city** - Enter a city name to get its weather
 - 🌡️ **Current weather display** - Shows temperature, conditions, and high/low
-- 📅 **7-day forecast** - View weather predictions for the next 7 days
+- 📅 **7-day forecast** - Accurate 7-day forecasts powered by OpenWeatherMap One Call data
 - 📱 **Responsive design** - Works on desktop, tablet, and mobile devices
 - ⚡ **Real-time data** - Uses OpenWeatherMap API for accurate forecasts
+
+## What's changed
+
+- Switched forecast fetching to OpenWeatherMap One Call endpoint to provide a true 7-day `daily` forecast.
+- UI refreshed: new fonts, glass-style cards, gradient primary button, loading spinner, and improved spacing/shadows.
+- Updated `script.js` to fetch 7-day data and updated `styles.css`/`index.html` for the modern UI.
 
 ## Setup Instructions
 
@@ -17,30 +27,23 @@ A simple, responsive weather forecast application that displays current weather 
 1. Visit [OpenWeatherMap API](https://openweathermap.org/api)
 2. Click "Sign Up" and create a free account
 3. Go to your API keys page (Account → API keys)
-4. Copy your API key (looks like: `a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6`)
+4. Copy your API key
 
 ### 2. Configure the API Key
 
-1. Open `script.js` in your editor
-2. Find this line at the top:
-   ```javascript
-   const API_KEY = 'YOUR_API_KEY_HERE';
-   ```
-3. Replace `YOUR_API_KEY_HERE` with your actual API key:
-   ```javascript
-   const API_KEY = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
-   ```
+1. Open [script.js](script.js) in your editor
+2. Find the `API_KEY` constant near the top and set your key:
+
+```javascript
+const API_KEY = 'YOUR_ACTUAL_API_KEY_HERE';
+```
+
+Note: The app first fetches current weather by city name (to obtain coordinates), then uses the One Call API with the returned lat/lon to fetch the 7-day `daily` forecast.
 
 ### 3. Run the Application
 
-1. Open `index.html` in your web browser
-   - Option A: Double-click the file
-   - Option B: Right-click → Open with → Your browser
-   - Option C: Use a local server (recommended for better functionality)
+Run a simple local server and open the app in your browser. Example with Python:
 
-## Using a Local Server (Recommended)
-
-### With Python
 ```bash
 # Python 3.x
 python -m http.server 8000
@@ -48,61 +51,37 @@ python -m http.server 8000
 # Then visit: http://localhost:8000
 ```
 
-### With Node.js (http-server)
+Or using Node's `http-server`:
+
 ```bash
-# Install globally (first time only)
 npm install -g http-server
-
-# Run the server
 http-server
-
 # Then visit: http://localhost:8080
 ```
 
-## Usage
+## File Overview
 
-1. Enter a city name in the search box
-2. Click "Search" or press Enter
-3. View the current weather and 7-day forecast
+See the main files:
 
-## File Structure
+- [index.html](index.html) — HTML structure and spinner
+- [styles.css](styles.css) — Modernized styles, fonts, and animations
+- [script.js](script.js) — API calls (current weather + One Call) and UI logic
 
-```
-Agent_Wheather/
-├── index.html        # Main HTML structure
-├── styles.css        # Styling and responsive design
-├── script.js         # JavaScript functionality and API calls
-├── README.md         # This file
-└── .gitignore        # Git ignore file
-```
+## Testing
 
-## Technologies Used
-
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **API**: OpenWeatherMap Free Tier
-- **No dependencies** - Runs with just a browser!
-
-## Future Enhancements
-
-- Add hourly forecast
-- Save favorite cities to local storage
-- Add weather alerts
-- Show additional metrics (humidity, wind speed, UV index)
-- Add geolocation support
-
-## License
-
-Free to use and modify for personal projects.
+1. Ensure your `API_KEY` is configured in [script.js](script.js).
+2. Start a local server (see commands above).
+3. Search for a city and verify current weather and the 7-day forecast render correctly.
 
 ## Support
 
-If you get an error about the API key:
-- Make sure you've added your API key to `script.js`
-- Check that your API key is valid (test it on the OpenWeatherMap website)
-- Ensure you have internet connectivity
-- The free tier updates weather data every 10 minutes
+If something doesn't work:
 
-If a city isn't found:
-- Double-check the spelling
-- Try the city in English
-- For cities with common names, try adding the country (e.g., "Paris, France")
+- Verify the API key is correct and has not been restricted.
+- Check network console for API errors; the app will display friendly messages for common errors like "City not found".
+- If you want, open an issue describing the problem and steps to reproduce.
+
+---
+
+Thank you for using this small weather app — contributions and improvements welcome!
+- Add hourly forecast

@@ -35,9 +35,9 @@ async function handleSearch() {
     showLoading();
 
     try {
-        // Fetch current weather and forecast data
+        // Fetch current weather and 7-day forecast data
         const currentWeatherData = await fetchCurrentWeather(city);
-        const forecastData = await fetchForecast(city);
+        const forecastData = await fetchForecast(currentWeatherData.coord);
 
         // Display the data
         displayCurrentWeather(currentWeatherData);
@@ -71,16 +71,14 @@ async function fetchCurrentWeather(city) {
     return response.json();
 }
 
-// Fetch 5-day forecast data
-async function fetchForecast(city) {
-    const url = `${BASE_URL}/forecast?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`;
+// Fetch 7-day forecast using One Call API (requires lat/lon)
+async function fetchForecast(coords) {
+    const { lat, lon } = coords;
+    const url = `${BASE_URL}/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&appid=${API_KEY}&units=metric`;
 
     const response = await fetch(url);
-    
+
     if (!response.ok) {
-        if (response.status === 404) {
-            throw new Error('City not found. Please check the name and try again.');
-        }
         throw new Error('Failed to fetch forecast data. Please try again.');
     }
 
@@ -109,58 +107,37 @@ function displayCurrentWeather(data) {
 
 // Display 7-day forecast (aggregated from 5-day data)
 function displayForecast(data) {
-    const { list } = data;
-    
-    // Group forecast data by day (take noon data for each day)
-    const dailyForecasts = {};
-    
-    list.forEach(item => {
-        const date = new Date(item.dt * 1000);
-        const dayKey = date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-        const hour = date.getHours();
-        
-        // Prefer 12:00 PM data, but take closest available
-        if (!dailyForecasts[dayKey] || Math.abs(hour - 12) < Math.abs(new Date(dailyForecasts[dayKey].dt * 1000).getHours() - 12)) {
-            dailyForecasts[dayKey] = item;
-        }
-    });
+    const { daily } = data;
 
     const forecastGrid = document.getElementById('forecastGrid');
     forecastGrid.innerHTML = '';
 
-    // Get next 7 days (including today if available)
-    const today = new Date();
-    
-    for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() + i);
-        const dayKey = date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-        
-        const forecastData = dailyForecasts[dayKey];
-        
-        if (forecastData) {
-            const card = createForecastCard(forecastData, date);
-            forecastGrid.appendChild(card);
-        }
-    }
+    // Use up to 7 days from the One Call daily array
+    const days = daily.slice(0, 7);
+
+    days.forEach(dayData => {
+        const date = new Date(dayData.dt * 1000);
+        const card = createForecastCard(dayData, date);
+        forecastGrid.appendChild(card);
+    });
 }
 
 // Create a single forecast card
 function createForecastCard(data, date) {
-    const { main, weather } = data;
+    const { temp, weather } = data;
     const weatherIcon = `https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
-    
+
     const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
     const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    
+
     const card = document.createElement('div');
     card.className = 'forecast-card';
     card.innerHTML = `
         <div class="forecast-day">${dayName}</div>
         <div class="forecast-date">${dateStr}</div>
         <img src="${weatherIcon}" alt="${weather[0].main}" class="forecast-icon">
-        <div class="forecast-temp">${Math.round(main.temp)}°</div>
-        <div class="forecast-min">L ${Math.round(main.temp_min)}°</div>
+        <div class="forecast-temp">${Math.round(temp.day)}°</div>
+        <div class="forecast-min">L ${Math.round(temp.min)}°</div>
         <div class="forecast-condition">${weather[0].main}</div>
     `;
 
